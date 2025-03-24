@@ -3,11 +3,11 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.visualpathit</groupId>
-    <artifactId>vprofile</artifactId>
+    <groupId>com.mjti</groupId>
+    <artifactId>mjti-app</artifactId>
     <packaging>war</packaging>
     <version>v2</version>
-    <name>Visualpathit VProfile Webapp</name>
+    <name>mjti profile app</name>
     <url>http://maven.apache.org</url>
 
     <properties>
@@ -302,27 +302,6 @@
  		            </execution>
  		        </executions>
  		</plugin>
-<!--            <plugin>-->
-<!--                <groupId>org.jacoco</groupId>-->
-<!--                <artifactId>jacoco-maven-plugin</artifactId>-->
-<!--                <version>0.8.10</version>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>jacoco-initialize</id>-->
-<!--                        <phase>process-resources</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>prepare-agent</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                    <execution>-->
-<!--                        <id>jacoco-site</id>-->
-<!--                        <phase>post-integration-test</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>report</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
         </plugins>
     </build>
     <repositories>
