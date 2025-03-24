@@ -7,7 +7,7 @@ pipeline {
     stages {
         stage('test'){
             steps {
-                sh 'pwd && ls -lha'
+                sh 'ls -lha'
             }
         }
     }
