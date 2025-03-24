@@ -5,7 +5,7 @@ pipeline {
         maven 'MAVEN3'
     }
     stages {
-        stage('testing'){
+        stage('test'){
             steps {
                 sh 'pwd && ls -lha'
             }
