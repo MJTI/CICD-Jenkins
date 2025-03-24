@@ -5,9 +5,21 @@ pipeline {
         maven 'MAVEN3'
     }
     stages {
+        stage('install'){
+            steps {
+                sh 'mvn clean install -DskipTests'
+            }
+        }
+
         stage('test'){
             steps {
-                sh 'ls -lha'
+                sh 'mvn test'
+            }
+        }
+
+        stage('checkstyle test'){
+            steps{
+                sh 'mvn checkstyle:checkstyle'
             }
         }
     }
