@@ -7,6 +7,7 @@ pipeline {
 
     environment {
         SONAR_SERVER = 'sonarserver'
+        SONAR_TOKEN = 'sonarlogin'
     }
     
     stages {
@@ -38,7 +39,7 @@ pipeline {
                     "${scannerHome}"/bin/sonar-scanner \
                     -Dsonar.projectKey=mjti-app \
                     -Dsonar.host.url=http://172.31.45.194 \
-                    -Dsonar.login=sonarlogin
+                    -Dsonar.login="${SONAR_TOKEN}"
                     '''
               }
             }
