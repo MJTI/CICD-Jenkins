@@ -36,7 +36,7 @@ pipeline {
             steps{
                 withSonarQubeEnv("${SONAR_SERVER}") {
                     sh '''
-                    "${scannerHome}"/bin/sonar-scanner \
+                    "${scannerHome}"/bin/sonar-scanner -X \
                     -Dsonar.projectKey=mjti-app \
                     -Dsonar.host.url=http://172.31.45.194 \
                     -Dsonar.token="${SONAR_TOKEN}"
