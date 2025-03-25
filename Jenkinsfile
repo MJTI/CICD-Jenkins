@@ -34,7 +34,7 @@ pipeline {
                 scannerHome = tool 'sonarscanner'
             }
             steps{
-                withSonarQubeEnv("$SONAR_SERVER") {
+                withSonarQubeEnv("${SONAR_SERVER}") {
                     sh '''
                     "${scannerHome}"/bin/sonar-scanner \
                     -Dsonar.projectKey=mjti-app \
