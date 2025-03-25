@@ -38,9 +38,13 @@ pipeline {
                     sh '''
                     "${scannerHome}"/bin/sonar-scanner \
                     -Dsonar.projectKey=mjti-app \
-                    -Dsonar.host.url=http://172.31.45.194 \
-                    -Dsonar.java.binaries=target/test-classes/com/
-                    '''
+                    -Dsonar.projectName=mjti-project \
+                    -Dsonar.projectVersion=1.0 \
+                    -Dsonar.java.binaries=target/test-classes/com/ \
+                    -Dsonar.sources=src/ \
+                    -Dsonar.junit.reportsPath=target/surefire-reports/ \
+                    -Dsonar.jacoco.reportsPath=target/jacoco.exec \
+                    -Dsonar.java.checkstyle.reportsPaths=target/checkstyle-result.xml'''
               }
             }
         }
@@ -56,5 +60,6 @@ pipeline {
                 }
             }
         }
+
     }
 }
