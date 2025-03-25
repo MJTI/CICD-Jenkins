@@ -45,11 +45,13 @@ pipeline {
         }
 
         stage("Quality Gate"){
-          timeout(time: 1, unit: 'HOURS') {
-              if (waitForQualityGate().status != 'OK') {
-                  error "Pipeline aborted due to quality gate failure: ${waitForQualityGate().status}"
+            steps{
+                timeout(time: 1, unit: 'HOURS') {
+                    if (waitForQualityGate().status != 'OK') {
+                        error "Pipeline aborted due to quality gate failure: ${waitForQualityGate().status}"
               }
           }
-      }
+            }
+        }
     }
 }
