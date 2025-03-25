@@ -39,7 +39,7 @@ pipeline {
                     "${scannerHome}"/bin/sonar-scanner \
                     -Dsonar.projectKey=mjti-app \
                     -Dsonar.host.url=http://172.31.45.194 \
-                    -Dsonar.login="${SONAR_TOKEN}"
+                    -Dsonar.token="${SONAR_TOKEN}"
                     '''
               }
             }
