@@ -8,7 +8,7 @@ pipeline {
     environment {
         SONAR_SERVER = 'sonarserver'
         SONAR_TOKEN = 'sonarlogin'
-        NEXUS_LOGIN = 'nexusulogin'
+        NEXUS_LOGIN = 'nexuslogin'
         NEXUSIP = '172.31.47.168'
         NEXUSPORT = '8081'
         NEXUS_GRP_REPO = 'mjti-maven-group'
