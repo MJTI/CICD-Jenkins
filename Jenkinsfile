@@ -8,6 +8,7 @@ pipeline {
     environment {
         SONAR_SERVER = 'sonarserver'
         SONAR_TOKEN = 'sonarlogin'
+        NEXUS_LOGIN = 'nexusulogin'
         NEXUSIP = '172.31.47.168'
         NEXUSPORT = '8081'
         NEXUS_GRP_REPO = 'mjti-maven-group'
@@ -19,7 +20,7 @@ pipeline {
     stages {
         stage('Build'){
             steps {
-                withCredentials([usernamePassword(credentialsId: 'nexuslogin', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+                withCredentials([usernamePassword(credentialsId: "${NEXUS_LOGIN}", usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
                     sh 'mvn clean install -s settings.xml -DskipTest'
                 }
             }
@@ -76,6 +77,26 @@ pipeline {
                         }
                     }
                 }
+            }
+        }
+
+        stage('Upload Artifact'){
+            steps{
+                nexusArtifactUploader(
+                    nexusVersion: 'nexus3',
+                    protocol: 'http',
+                    nexusUrl: "${NEXUSIP}" + ":" + "${NEXUSPORT}",
+                    groupId: 'com.mjti',
+                    version: "${BUILD_TIMESTAMP}",
+                    repository: "${RELEASE_REPO}",
+                    credentialsId: "${NEXUS_LOGIN}",
+                    artifacts: [
+                        [artifactId: 'mjti-app',
+                         classifier: '',
+                         file: 'target/mjti-app-v2.war',
+                         type: 'war']
+                    ]
+                )
             }
         }
     }
