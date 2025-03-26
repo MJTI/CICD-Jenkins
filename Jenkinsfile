@@ -22,11 +22,11 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'nexuslogin', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
                     sh 'mvn clean install -s settings.xml -DskipTest'
                 }
-                post {
-                    success {
-                        echo 'Now Archiving...'
-                        archiveArtifacts artifacts: '**/target/*.war'
-                    }
+            }
+            post {
+                success {
+                    echo 'Now Archiving...'
+                    archiveArtifacts artifacts: '**/target/*.war'
                 }
             }
         }
