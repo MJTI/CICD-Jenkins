@@ -84,7 +84,6 @@ pipeline {
             steps{
                 script {
                     def warFile = findFiles(glob: 'target/*.war')
-                    echo "${warFile[0].name}"
                     nexusArtifactUploader(
                         nexusVersion: 'nexus3',
                         protocol: 'http',
