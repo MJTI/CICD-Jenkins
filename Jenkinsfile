@@ -103,4 +103,11 @@ pipeline {
             }
         }
     }
+    post {
+        success {
+            script {
+                slackSend(channel: "jenkins", message: "my-first-pipeline-slack passed successfully")
+            }
+        }
+    }
 }
