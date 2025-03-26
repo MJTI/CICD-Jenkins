@@ -111,7 +111,11 @@ pipeline {
     post {
         success {
             script {
-                slackSend(channel: "jenkins", color: COLOR[currentBuild.currentResult] , message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n more info at ${env.BUILD_URL}")
+                slackSend(
+                    channel: "jenkins",
+                    color: COLOR[currentBuild.currentResult],
+                    message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n more info at ${env.BUILD_URL}"
+                )
             }
         }
     }
