@@ -1,5 +1,3 @@
-@Library('CICD-Jenkins') _
-
 pipeline {
     agent any
     tools {
@@ -21,19 +19,25 @@ pipeline {
     stages {
         stage('install'){
             steps {
-                mavenBuild()
+                withCredentials([usernamePassword(credentialsId: 'nexuslogin', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+                    sh 'mvn clean install -s settings.xml -DskipTest'
+                }
             }
         }
 
         stage('test'){
             steps {
-                mavenUnitTest()
+                withCredentials([usernamePassword(credentialsId: 'nexuslogin', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+                    sh 'mvn test -s settings.xml'
+                }
             }
         }
 
         stage('checkstyle test'){
             steps{
-                mavenCheckstyle()
+                withCredentials([usernamePassword(credentialsId: 'nexuslogin', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+                    sh 'mvn checkstyle:checkstyle -s settings.xml'
+                }
             }
         }
 
