@@ -1,3 +1,8 @@
+def COLOR = [
+    'SUCCESS' : 'good',
+    'FAILURE' : 'danger'
+]
+
 pipeline {
     agent any
     tools {
@@ -89,7 +94,7 @@ pipeline {
                         protocol: 'http',
                         nexusUrl: "${NEXUSIP}" + ":" + "${NEXUSPORT}",
                         groupId: 'com.mjti',
-                        version: "${BUILD_TIMESTAMP}",
+                        version: "${env.BUILD_ID}-${BUILD_TIMESTAMP}",
                         repository: "${RELEASE_REPO}",
                         credentialsId: "${NEXUS_LOGIN}",
                         artifacts: [
@@ -106,7 +111,7 @@ pipeline {
     post {
         success {
             script {
-                slackSend(channel: "jenkins", message: "my-first-pipeline-slack passed successfully")
+                slackSend(channel: "jenkins", color: COLOR[currentBuild.currentResult] , message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n more info at ${env.BUILD_URL}")
             }
         }
     }
