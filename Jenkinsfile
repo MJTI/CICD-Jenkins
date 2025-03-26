@@ -8,28 +8,47 @@ pipeline {
     environment {
         SONAR_SERVER = 'sonarserver'
         SONAR_TOKEN = 'sonarlogin'
+        NEXUS_LOGIN = 'nexuslogin'
+        NEXUSIP = '172.31.47.168'
+        NEXUSPORT = '8081'
+        NEXUS_GRP_REPO = 'mjti-maven-group'
+        CENTRAL_REPO = 'mjti-maven-central'
+        RELEASE_REPO = 'mjti-release'
+        SNAP_REPO = 'mjti-snapshot'
     }
     
     stages {
-        stage('install'){
+        stage('Build'){
             steps {
-                sh 'mvn clean install -DskipTests'
+                withCredentials([usernamePassword(credentialsId: "${NEXUS_LOGIN}", usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+                    sh 'mvn clean install -s settings.xml -DskipTest'
+                }
+            }
+            post {
+                success {
+                    echo 'Now Archiving...'
+                    archiveArtifacts artifacts: '**/target/*.war'
+                }
             }
         }
 
-        stage('test'){
+        stage('Unit Test'){
             steps {
-                sh 'mvn test'
+                withCredentials([usernamePassword(credentialsId: 'nexuslogin', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+                    sh 'mvn test -s settings.xml'
+                }
             }
         }
 
-        stage('checkstyle test'){
+        stage('Checkstyle Test'){
             steps{
-                sh 'mvn checkstyle:checkstyle'
+                withCredentials([usernamePassword(credentialsId: 'nexuslogin', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+                    sh 'mvn checkstyle:checkstyle -s settings.xml'
+                }
             }
         }
 
-        stage('sonar analytics'){
+        stage('Upload Reports'){
             environment{
                 scannerHome = tool 'sonarscanner'
             }
@@ -49,7 +68,7 @@ pipeline {
             }
         }
 
-        stage("Quality Gate"){
+        stage('Quality Gate'){
             steps{
                 script{
                     timeout(time: 1, unit: 'HOURS') {
@@ -61,5 +80,24 @@ pipeline {
             }
         }
 
+        stage('Upload Artifact'){
+            steps{
+                nexusArtifactUploader(
+                    nexusVersion: 'nexus3',
+                    protocol: 'http',
+                    nexusUrl: "${NEXUSIP}" + ":" + "${NEXUSPORT}",
+                    groupId: 'com.mjti',
+                    version: "${BUILD_TIMESTAMP}",
+                    repository: "${RELEASE_REPO}",
+                    credentialsId: "${NEXUS_LOGIN}",
+                    artifacts: [
+                        [artifactId: 'mjti-app',
+                         classifier: '',
+                         file: 'target/mjti-app-v2.war',
+                         type: 'war']
+                    ]
+                )
+            }
+        }
     }
 }
