@@ -34,7 +34,7 @@ pipeline {
 
         stage('Unit Test'){
             steps {
-                withCredentials([usernamePassword(credentialsId: 'nexuslogin', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+                withCredentials([usernamePassword(credentialsId: "${NEXUS_LOGIN}", usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
                     sh 'mvn test -s settings.xml'
                 }
             }
@@ -42,7 +42,7 @@ pipeline {
 
         stage('Checkstyle Test'){
             steps{
-                withCredentials([usernamePassword(credentialsId: 'nexuslogin', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+                withCredentials([usernamePassword(credentialsId: "${NEXUS_LOGIN}", usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
                     sh 'mvn checkstyle:checkstyle -s settings.xml'
                 }
             }
@@ -82,21 +82,24 @@ pipeline {
 
         stage('Upload Artifact'){
             steps{
-                nexusArtifactUploader(
-                    nexusVersion: 'nexus3',
-                    protocol: 'http',
-                    nexusUrl: "${NEXUSIP}" + ":" + "${NEXUSPORT}",
-                    groupId: 'com.mjti',
-                    version: "${BUILD_TIMESTAMP}",
-                    repository: "${RELEASE_REPO}",
-                    credentialsId: "${NEXUS_LOGIN}",
-                    artifacts: [
-                        [artifactId: 'mjti-app',
-                         classifier: '',
-                         file: 'target/mjti-app-v2.war',
-                         type: 'war']
-                    ]
-                )
+                script {
+                    def warFile = findFiles(glob: 'target/*.war')
+                    nexusArtifactUploader(
+                        nexusVersion: 'nexus3',
+                        protocol: 'http',
+                        nexusUrl: "${NEXUSIP}" + ":" + "${NEXUSPORT}",
+                        groupId: 'com.mjti',
+                        version: "${BUILD_TIMESTAMP}",
+                        repository: "${RELEASE_REPO}",
+                        credentialsId: "${NEXUS_LOGIN}",
+                        artifacts: [
+                            [artifactId: 'mjti-app',
+                             classifier: '',
+                             file: "target/${warFileName}",
+                             type: 'war']
+                        ]
+                    )
+                }
             }
         }
     }
