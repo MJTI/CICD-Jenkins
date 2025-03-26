@@ -17,15 +17,21 @@ pipeline {
     }
     
     stages {
-        stage('install'){
+        stage('Build'){
             steps {
                 withCredentials([usernamePassword(credentialsId: 'nexuslogin', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
                     sh 'mvn clean install -s settings.xml -DskipTest'
                 }
+                post {
+                    success {
+                        echo 'Now Archiving...'
+                        archiveArtifacts artifacts: '**/target/*.war'
+                    }
+                }
             }
         }
 
-        stage('test'){
+        stage('Unit Test'){
             steps {
                 withCredentials([usernamePassword(credentialsId: 'nexuslogin', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
                     sh 'mvn test -s settings.xml'
@@ -33,7 +39,7 @@ pipeline {
             }
         }
 
-        stage('checkstyle test'){
+        stage('Checkstyle Test'){
             steps{
                 withCredentials([usernamePassword(credentialsId: 'nexuslogin', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
                     sh 'mvn checkstyle:checkstyle -s settings.xml'
@@ -41,7 +47,7 @@ pipeline {
             }
         }
 
-        stage('sonar analytics'){
+        stage('Upload Reports'){
             environment{
                 scannerHome = tool 'sonarscanner'
             }
@@ -61,7 +67,7 @@ pipeline {
             }
         }
 
-        stage("Quality Gate"){
+        stage('Quality Gate'){
             steps{
                 script{
                     timeout(time: 1, unit: 'HOURS') {
@@ -72,6 +78,5 @@ pipeline {
                 }
             }
         }
-
     }
 }
