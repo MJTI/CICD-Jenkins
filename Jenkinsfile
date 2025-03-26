@@ -83,7 +83,7 @@ pipeline {
         stage('Upload Artifact'){
             steps{
                 script {
-                    def warFile = findFiles(glob: 'target/*.war'){}
+                    def warFile = findFiles(glob: 'target/*.war')
                     nexusArtifactUploader(
                         nexusVersion: 'nexus3',
                         protocol: 'http',
