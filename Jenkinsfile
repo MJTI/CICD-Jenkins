@@ -84,6 +84,8 @@ pipeline {
             steps{
                 script {
                     def warFile = findFiles(glob: 'target/*.war')
+                    echo "warFile value ${warFile}"
+                    echo "warFile value ${warFile[0]}"
                     nexusArtifactUploader(
                         nexusVersion: 'nexus3',
                         protocol: 'http',
@@ -95,7 +97,7 @@ pipeline {
                         artifacts: [
                             [artifactId: 'mjti-app',
                              classifier: '',
-                             file: "target/${warFile}",
+                             file: "target/${warFile[0].name}",
                              type: 'war']
                         ]
                     )
