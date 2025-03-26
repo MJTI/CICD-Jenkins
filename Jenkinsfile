@@ -1,3 +1,5 @@
+@Library('CICD-Jenkins') _
+
 pipeline {
     agent any
     tools {
@@ -8,24 +10,30 @@ pipeline {
     environment {
         SONAR_SERVER = 'sonarserver'
         SONAR_TOKEN = 'sonarlogin'
+        NEXUSIP = '172.31.47.168'
+        NEXUSPORT = '8081'
+        NEXUS_GRP_REPO = 'mjti-maven-group'
+        CENTRAL_REPO = 'mjti-maven-central'
+        RELEASE_REPO = 'mjti-release'
+        SNAP_REPO = 'mjti-snapshot'
     }
     
     stages {
         stage('install'){
             steps {
-                sh 'mvn clean install -DskipTests'
+                mavenBuild()
             }
         }
 
         stage('test'){
             steps {
-                sh 'mvn test'
+                mavenUnitTest()
             }
         }
 
         stage('checkstyle test'){
             steps{
-                sh 'mvn checkstyle:checkstyle'
+                mavenCheckstyle()
             }
         }
 
