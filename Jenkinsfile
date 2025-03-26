@@ -82,24 +82,24 @@ pipeline {
 
         stage('Upload Artifact'){
             steps{
-                //script {
-                def warFile = findFiles(glob: 'target/*.war')
-                nexusArtifactUploader(
-                    nexusVersion: 'nexus3',
-                    protocol: 'http',
-                    nexusUrl: "${NEXUSIP}" + ":" + "${NEXUSPORT}",
-                    groupId: 'com.mjti',
-                    version: "${BUILD_TIMESTAMP}",
-                    repository: "${RELEASE_REPO}",
-                    credentialsId: "${NEXUS_LOGIN}",
-                    artifacts: [
-                        [artifactId: 'mjti-app',
-                         classifier: '',
-                         file: "target/${warFile}",
-                         type: 'war']
-                    ]
-                )
-                //}
+                script {
+                    def warFile = findFiles(glob: 'target/*.war')
+                    nexusArtifactUploader(
+                        nexusVersion: 'nexus3',
+                        protocol: 'http',
+                        nexusUrl: "${NEXUSIP}" + ":" + "${NEXUSPORT}",
+                        groupId: 'com.mjti',
+                        version: "${BUILD_TIMESTAMP}",
+                        repository: "${RELEASE_REPO}",
+                        credentialsId: "${NEXUS_LOGIN}",
+                        artifacts: [
+                            [artifactId: 'mjti-app',
+                             classifier: '',
+                             file: "target/${warFile}",
+                             type: 'war']
+                        ]
+                    )
+                }
             }
         }
     }
