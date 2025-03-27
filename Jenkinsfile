@@ -20,7 +20,7 @@ pipeline {
         CENTRAL_REPO = 'mjti-maven-central'
         RELEASE_REPO = 'mjti-release'
         SNAP_REPO = 'mjti-snapshot'
-        MJTI_ECR_REPO = 'mjti-registry'
+        MJTI_ECR_REPO = '138913568231.dkr.ecr.us-east-1.amazonaws.com/stage/mjti-app'
         AWS_LOGIN = 'awslogin'
         AWS_REGION = 'us-east-1'
     }
@@ -114,10 +114,11 @@ pipeline {
         stage('Build Image'){
             steps{
                 script{
-                    withDockerRegistry(registryServer: "https://${MJTI_ECR_REPO}",credentialsId: "ecr:${AWS_REGION}:${AWS_LOGIN}") {
+                    docker.withRegistry("https://${MJTI_ECR_REPO}", "ecr:${AWS_REGION}:${AWS_LOGIN}") {
                         def image = docker.build("${MJTI_ECR_REPO}",'Docker/app/')
                         image.push("${env.BUILD_NUMBER}")
                         image.push('latest')
+
                     }
                 }
             }
