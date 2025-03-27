@@ -114,8 +114,10 @@ pipeline {
         stage('Build Image'){
             steps{
                 script{
-                    docker.withRegistry("https://${MJTI_ECR_REPO}", "ecr:${AWS_REGION}:${AWS_LOGIN}") {
-                        docker.build("${MJTI_ECR_REPO}:${env.BUILD_NUMBER}",'Docker/app/').push()
+                    withDockerRegistry(registryServer: "https://${MJTI_ECR_REPO}",credentialsId: "ecr:${AWS_REGION}:${AWS_LOGIN}") {
+                        def image = docker.build("${MJTI_ECR_REPO}",'Docker/app/')
+                        image.push("${env.BUILD_NUMBER}")
+                        image.push('latest')
                     }
                 }
             }
