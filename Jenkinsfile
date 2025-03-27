@@ -20,6 +20,9 @@ pipeline {
         CENTRAL_REPO = 'mjti-maven-central'
         RELEASE_REPO = 'mjti-release'
         SNAP_REPO = 'mjti-snapshot'
+        MJTI_ECR_REPO = '138913568231.dkr.ecr.us-east-1.amazonaws.com/stage/mjti-app'
+        AWS_LOGIN = 'awslogin'
+        AWS_REGION = 'us-east-1'
     }
     
     stages {
@@ -107,16 +110,27 @@ pipeline {
                 }
             }
         }
+
+        stage('Build Image'){
+            steps{
+                script{
+                    docker.withRegistry("https://${MJTI_ECR_REPO}", "ecr:${AWS_REGION}:${AWS_LOGIN}") {
+                        def image = docker.build("${MJTI_ECR_REPO}")
+                        image.push("${env.BUILD_NUMBER}")
+                        image.push('latest')
+
+                    }
+                }
+            }
+        }
     }
     post {
-        success {
-            script {
-                slackSend(
-                    channel: "jenkins",
-                    color: COLOR[currentBuild.currentResult],
-                    message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n more info at ${env.BUILD_URL}"
-                )
-            }
+        script {
+            slackSend(
+                channel: "jenkins",
+                color: COLOR[currentBuild.currentResult],
+                message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n more info at ${env.BUILD_URL}"
+            )
         }
     }
 }
