@@ -115,7 +115,6 @@ pipeline {
             steps{
                 script{
                     docker.withRegistry("https://${MJTI_ECR_REPO}", "ecr:${AWS_REGION}:${AWS_LOGIN}") {
-                        sh 'whoami && docker ps'
                         def image = docker.build("${MJTI_ECR_REPO}")
                         image.push("${env.BUILD_NUMBER}")
                         image.push('latest')
@@ -126,14 +125,12 @@ pipeline {
         }
     }
     post {
-        success {
-            script {
-                slackSend(
-                    channel: "jenkins",
-                    color: COLOR[currentBuild.currentResult],
-                    message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n more info at ${env.BUILD_URL}"
-                )
-            }
+        script {
+            slackSend(
+                channel: "jenkins",
+                color: COLOR[currentBuild.currentResult],
+                message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n more info at ${env.BUILD_URL}"
+            )
         }
     }
 }
