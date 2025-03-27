@@ -20,6 +20,9 @@ pipeline {
         CENTRAL_REPO = 'mjti-maven-central'
         RELEASE_REPO = 'mjti-release'
         SNAP_REPO = 'mjti-snapshot'
+        MJTI_ECR_REPO = 'mjti-registry'
+        AWS_LOGIN = 'awslogin'
+        AWS_REGION = 'us-east-1'
     }
     
     stages {
@@ -104,6 +107,16 @@ pipeline {
                              type: 'war']
                         ]
                     )
+                }
+            }
+        }
+
+        stage('Build Image'){
+            steps{
+                script{
+                    docker.withRegistry("https://${MJTI_ECR_REPO}", "ecr:${AWS_REGION}:${AWS_LOGIN}") {
+                        docker.build("${MJTI_ECR_REPO}:${env.BUILD_NUMBER}",'Docker/app/').push()
+                    }
                 }
             }
         }
