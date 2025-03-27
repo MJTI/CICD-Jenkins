@@ -115,7 +115,8 @@ pipeline {
             steps{
                 script{
                     docker.withRegistry("https://${MJTI_ECR_REPO}", "ecr:${AWS_REGION}:${AWS_LOGIN}") {
-                        def image = docker.build("${MJTI_ECR_REPO}",'Docker/app/')
+                        sh 'whoami && docker ps'
+                        def image = docker.build("${MJTI_ECR_REPO}",'./Docker/app/')
                         image.push("${env.BUILD_NUMBER}")
                         image.push('latest')
 
