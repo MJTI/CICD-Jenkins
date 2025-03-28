@@ -23,6 +23,8 @@ pipeline {
         MJTI_ECR_REPO = '138913568231.dkr.ecr.us-east-1.amazonaws.com/stage/mjti-app'
         AWS_LOGIN = 'awslogin'
         AWS_REGION = 'us-east-1'
+        CLUSTER_NAME = 'stage-mjti'
+        SERVICE_NAME = 'mjti-stage-service'
     }
     
     stages {
@@ -120,6 +122,14 @@ pipeline {
                         image.push('latest')
 
                     }
+                }
+            }
+        }
+
+        stage('Deploy To ECS'){
+            steps{
+                withAWS(credentials: "${AWS_LOGIN}", region: "${AWS_REGION}") {
+                    sh 'aws ecs update-service --cluster ${CLUSTER_NAME} --service ${SERVICE_NAME} --force-new-deployment'
                 }
             }
         }
