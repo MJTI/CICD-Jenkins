@@ -23,8 +23,8 @@ pipeline {
         MJTI_ECR_REPO = '138913568231.dkr.ecr.us-east-1.amazonaws.com/stage/mjti-app'
         AWS_LOGIN = 'awslogin'
         AWS_REGION = 'us-east-1'
-        CLUSTER_NAME = 'stage-mjti'
-        SERVICE_NAME = 'mjti-stage-service'
+        CLUSTER_NAME = 'stage_cluster'
+        SERVICE_NAME = 'stage-service-5'
     }
     
     stages {
